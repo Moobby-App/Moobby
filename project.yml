@@ -1,4 +1,4 @@
-name: architecture-swift-template
+name: moobby
 options:
   bundleIdPrefix: com.appleacademy
   deploymentTarget:
@@ -13,14 +13,14 @@ settings:
     DEVELOPMENT_TEAM: FU4TVB538X
 
 targets:
-  architecture-swift-template:
+  moobby:
     type: application
     platform: iOS
     sources:
-      - path: architecture-swift-template
+      - path: moobby
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.appleacademy.architecture-swift-template
+        PRODUCT_BUNDLE_IDENTIFIER: com.appleacademy.moobby
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES

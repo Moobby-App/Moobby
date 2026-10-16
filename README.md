@@ -13,7 +13,7 @@ This project uses [XcodeGen](https://github.com/yonaskolb/XcodeGen) to generate 
 ```bash
 brew install xcodegen
 xcodegen generate
-open architecture-swift-template.xcodeproj
+open moobby.xcodeproj
 ```
 
 Re-run `xcodegen generate` any time you add, remove, or move Swift files — Xcode won't pick up the change otherwise.
@@ -61,7 +61,7 @@ graph TD
 ### Folder Structure
 
 ```text
-architecture-swift-template/
+moobby/
 ├── project.yml                     # XcodeGen project spec (source of truth for the .xcodeproj)
 │
 ├── App/                             # Application Entry & Window Management
