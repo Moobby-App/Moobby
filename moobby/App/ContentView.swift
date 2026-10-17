@@ -11,12 +11,13 @@ import SwiftUI
 struct ContentView: View {
 
     let container: AppContainer
+    @State private var mapTracker = LocationTrackerViewModel()
 
     var body: some View {
         TabView {
-            Tab("Weather", systemImage: "cloud.sun.fill") {
+            Tab("Map", systemImage: "map.fill") {
                 NavigationStack {
-                    HomeView(viewModel: HomeViewModel(container: container))
+                    MapView(tracker: mapTracker)
                 }
             }
 
