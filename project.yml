@@ -28,4 +28,5 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_NSFaceIDUsageDescription: "Face ID is used to demonstrate biometric authentication in the UI Components catalog."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Shows your position and route on the map."
         CODE_SIGN_STYLE: Automatic
