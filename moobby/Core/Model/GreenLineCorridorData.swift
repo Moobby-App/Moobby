@@ -9,17 +9,35 @@ import Foundation
 import CoreLocation
 
 // MARK: - 1. KRL Green Line Station Model (Milestone 0B)
+/// A station on the KRL Green Line (Lin Rangkasbitung), from Tanah Abang to Rangkasbitung.
+///
+/// ``all`` lists the stations the app shows. They draw as green markers on the map, and incidents
+/// and nearby transit are measured from them. The track between them is ``GreenLineTrack``.
+///
+/// ```swift
+/// let kebayoran = GreenLineStation.all.first { $0.id == "KBY" }
+/// ```
 struct GreenLineStation: Identifiable, Hashable {
+    /// The station code, such as `"THB"` for Tanah Abang. Shown under the marker.
     let id: String
+    /// The full name, such as `"Stasiun Tanah Abang"`.
     let name: String
+    /// Position on the line, counting from Tanah Abang (1) toward Rangkasbitung.
     let sequence: Int
+    /// The station's latitude, in degrees.
     let latitude: Double
+    /// The station's longitude, in degrees.
     let longitude: Double
 
+    /// ``latitude`` and ``longitude`` as a coordinate, for MapKit.
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
+    /// The stations the app shows, in line order from Tanah Abang.
+    ///
+    /// This is a subset: the line has 19 stops, and this list has 12 of them. Positions are hand-entered
+    /// and sit within about 100 m of the station.
     static let all: [GreenLineStation] = [
         GreenLineStation(id: "THB", name: "Stasiun Tanah Abang", sequence: 1, latitude: -6.1857, longitude: 106.8108),
         GreenLineStation(id: "PLM", name: "Stasiun Palmerah", sequence: 2, latitude: -6.2072, longitude: 106.7972),
@@ -37,28 +55,50 @@ struct GreenLineStation: Identifiable, Hashable {
 }
 
 // MARK: - 2. News & Disruptions Along the 3 km Corridor (Milestone 1 - Scenario A)
+/// A news item or service disruption near the Green Line, shown as a pin on the map.
+///
+/// ``MapViewModel/corridorIncidents`` keeps only the ones within 3 km of a station.
+///
+/// > Note: ``curatedSamples`` is hand-written sample data for the prototype, not a live news feed.
 struct CorridorIncident: Identifiable, Hashable {
+    /// A unique ID, such as `"inc-001"`.
     let id: String
+    /// The headline, in Indonesian, as published.
     let title: String
+    /// `"service_disruption"` for problems with train service itself, such as signalling faults.
+    /// `"incident"` for events around the line, such as protests, flooding, or roadworks.
     let category: String // "service_disruption" or "incident"
+    /// Where it happened, such as `"Simpang Velbak Kebayoran"`. Used as the pin's title.
     let locationName: String
+    /// Latitude of ``locationName``, in degrees.
     let latitude: Double
+    /// Longitude of ``locationName``, in degrees.
     let longitude: Double
+    /// The ``GreenLineStation/id`` of the closest station.
     let nearestStationId: String
+    /// The closest station's name, as shown in the card.
     let nearestStationName: String
+    /// Straight-line distance to that station, in kilometers. Entered by hand, not computed from the coordinates.
     let distanceToStationKm: Double
+    /// When the source published it, already formatted for display, such as `"18 Okt 2026 • 11:20 WIB"`.
     let publishedAt: String
+    /// Who reported it, such as a news site or KAI Commuter.
     let sourceName: String
+    /// `"verified"` when it comes from an official operator source, `"unverified"` for news and social reports.
+    /// Read ``isVerified`` instead of comparing the string.
     let verificationStatus: String // "verified" or "unverified"
 
+    /// ``latitude`` and ``longitude`` as a coordinate, for MapKit.
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
+    /// True when ``verificationStatus`` is `"verified"`; the card labels it as an operational disruption.
     var isVerified: Bool {
         verificationStatus == "verified"
     }
 
+    /// Four sample incidents along the line, for the Route Disruptions scenario. Sources are marked "Contoh Kurasi".
     static let curatedSamples: [CorridorIncident] = [
         CorridorIncident(
             id: "inc-001",
@@ -120,19 +160,36 @@ struct CorridorIncident: Identifiable, Hashable {
 }
 
 // MARK: - 3. Nearby Transit Points within 3 km of the User (Milestone 1 - Scenario B)
+/// A stop for another way to travel near the Green Line, such as a TransJakarta halte, an MRT station, or a feeder bus.
+///
+/// ``MapViewModel/nearbyTransits(from:)`` returns the ones within 3 km of the user, with
+/// ``straightLineDistanceKm`` filled in, plus any Green Line stations in range.
+///
+/// > Note: ``catalog`` is hand-written sample data for the prototype.
 struct NearbyTransitPoint: Identifiable, Hashable {
+    /// A unique ID, such as `"tr-01"`. Green Line stations returned by the search use `"krl-\(station.id)"`.
     let id: String
+    /// The stop's name, such as `"Halte TransJakarta Velbak"`.
     let name: String
+    /// How you travel from here, shown as a label. Free text, such as `"TransJakarta"`, `"MRT Jakarta"`,
+    /// `"Shuttle Bus"`, or `"KRL Green Line"`.
     let mode: String // "TransJakarta", "MRT", "BSD Link / Shuttle", "JakLingko", "KRL"
+    /// The routes or corridors that stop here, such as `"Koridor 13 (Ciledug - Tendean)"`.
     let routesInfo: String
+    /// The stop's latitude, in degrees.
     let latitude: Double
+    /// The stop's longitude, in degrees.
     let longitude: Double
+    /// Straight-line distance from the user, in kilometers. `nil` in ``catalog``; set by
+    /// ``MapViewModel/nearbyTransits(from:)``. It isn't walking distance.
     var straightLineDistanceKm: Double?
 
+    /// ``latitude`` and ``longitude`` as a coordinate, for MapKit.
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
+    /// Nine sample stops near Green Line stations, grouped by area, for the Nearby Modes scenario.
     static let catalog: [NearbyTransitPoint] = [
         // Around Tanah Abang & Palmerah
         NearbyTransitPoint(id: "tr-01", name: "Halte JakLingko / Explorer Tanah Abang", mode: "TransJakarta", routesInfo: "Rute 1H, 1N, 1R, 8C, 8M, 9D", latitude: -6.1862, longitude: 106.8118),

@@ -8,41 +8,53 @@
 import MapKit
 import Observation
 
+/// Which Green Line question the map is answering. The raw value is the segmented control's label.
 enum CommuteScenarioMode: String, CaseIterable, Identifiable {
+    /// Scenario A: what's happening within 3 km of the line. Shows ``CorridorIncident`` pins and a 3 km circle per station.
     case corridorIncidents = "Route Disruptions (3 km)"
+    /// Scenario B: other ways to travel within 3 km of the user. Shows ``NearbyTransitPoint`` pins and a 3 km circle around the user.
     case nearbyTransit = "Nearby Modes (3 km)"
     var id: String { rawValue }
 }
 
+/// Runs the map's MapKit lookups, place search and the address behind the user's dot, and the Green Line scenarios.
+///
+/// ``MapView`` owns it with `@State`. Failures don't throw; they set ``errorMessage`` and ``isShowingError``
+/// for the view's alert.
 @MainActor @Observable
-// Runs the map's MapKit lookups: place search, and the address behind the user's dot.
-//
-// ``MapView`` owns it with `@State`. Failures don't throw; they set ``errorMessage`` and ``isShowingError``
-// for the view's alert.
 final class MapViewModel {
-    // The search text. Clearing it also clears ``results``.
+    /// The search text. Clearing it also clears ``results``.
     var query = "" {
         didSet { if query.isEmpty { results = [] } }
     }
-    // Places from the last search, shown as markers.
+    /// Places from the last search, shown as markers.
     private(set) var results: [MKMapItem] = []
-    // The place whose card is showing, e.g. the address under the user's dot.
+    /// The place whose card is showing, e.g. the address under the user's dot.
     var selectedPlace: MKMapItem?
-    // A sentence for the user explaining the last failure.
+    /// A sentence for the user explaining the last failure.
     var errorMessage: String?
-    // Drives the error alert; set together with ``errorMessage``.
+    /// Drives the error alert; set together with ``errorMessage``.
     var isShowingError = false
 
     // MARK: - Milestone 0B & Milestone 1 State
+    /// The Green Line stations to draw, from ``GreenLineStation/all``.
     let stations: [GreenLineStation] = GreenLineStation.all
+    /// The scenario picked in the header; decides which pins and circles show.
     var activeMode: CommuteScenarioMode = .corridorIncidents
+    /// Whether to draw the 3 km circles for ``activeMode``.
     var showCorridorRadiusCircle: Bool = true
+    /// The incident whose detail sheet is showing.
     var selectedIncident: CorridorIncident?
+    /// The transit stop whose detail sheet is showing.
     var selectedTransit: NearbyTransitPoint?
 
+    /// How far "near" reaches, for both scenarios: 3 km, measured in a straight line.
     static let maxRadiusMeters: CLLocationDistance = 3_000 // 3 km per Milestone 1 spec
 
-    // Scenario A: Filter news within ≤ 3 km of any station along the Green Line corridor
+    /// Scenario A: the ``CorridorIncident/curatedSamples`` within ``maxRadiusMeters`` of any station.
+    ///
+    /// Distance is measured to stations, not to the track, so an incident beside the line midway between
+    /// two stations far apart can be left out.
     var corridorIncidents: [CorridorIncident] {
         CorridorIncident.curatedSamples.filter { incident in
             let incLoc = CLLocation(latitude: incident.latitude, longitude: incident.longitude)
@@ -53,7 +65,19 @@ final class MapViewModel {
         }
     }
 
-    // Scenario B: Find transit points/alternative modes within ≤ 3 km of the user's current GPS position
+    /// Scenario B: transit stops and Green Line stations within ``maxRadiusMeters`` of the user, nearest first.
+    ///
+    /// Each result has ``NearbyTransitPoint/straightLineDistanceKm`` set. Stations come back as
+    /// `NearbyTransitPoint`s with the mode `"KRL Green Line"`.
+    ///
+    /// ```swift
+    /// // Standing at Stasiun Kebayoran:
+    /// let nearby = model.nearbyTransits(from: CLLocationCoordinate2D(latitude: -6.2373, longitude: 106.7825))
+    /// // Stasiun Kebayoran (0.00 km), Halte Pasar Kebayoran Lama (0.12 km),
+    /// // Halte TransJakarta Velbak (0.26 km), Stasiun MRT ASEAN (1.78 km)
+    /// ```
+    ///
+    /// - Parameter userCoordinate: Where the user is. Returns an empty array when `nil`.
     func nearbyTransits(from userCoordinate: CLLocationCoordinate2D?) -> [NearbyTransitPoint] {
         guard let userCoordinate else { return [] }
         let userLoc = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
@@ -90,7 +114,7 @@ final class MapViewModel {
     }
 
     // MARK: - Original Search Functions
-    // Searches around what's on screen; returns true when there are results to frame.
+    /// Searches around what's on screen; returns true when there are results to frame.
     func search(in region: MKCoordinateRegion?) async -> Bool {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = query
@@ -106,7 +130,7 @@ final class MapViewModel {
         return !results.isEmpty
     }
 
-    // Looks up the address under a coordinate and opens MapKit's own place card for it.
+    /// Looks up the address under a coordinate and opens MapKit's own place card for it.
     func showPlace(at coordinate: CLLocationCoordinate2D) async {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         guard let request = MKReverseGeocodingRequest(location: location) else { return }

@@ -57,8 +57,9 @@ struct MapView: View {
             }
 
             // 3. MILESTONE 0B: Corridor Line & KRL Green Line Stations
-            MapPolyline(coordinates: model.stations.map(\.coordinate))
-                .stroke(.green, lineWidth: 4)
+            // The real track from OpenStreetMap, not straight lines between stations.
+            MapPolyline(coordinates: GreenLineTrack.coordinates)
+                .stroke(.green, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
 
             if model.showCorridorRadiusCircle {
                 if model.activeMode == .corridorIncidents {
@@ -195,6 +196,11 @@ struct MapView: View {
                         .font(.subheadline)
                         .fontWeight(.bold)
                     Text("Tanah Abang ↔ Rangkasbitung")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    // Required by the ODbL for the track geometry in GreenLineTrack.
+                    Link("Track © OpenStreetMap contributors",
+                         destination: URL(string: "https://www.openstreetmap.org/copyright")!)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

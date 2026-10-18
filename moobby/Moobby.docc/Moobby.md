@@ -16,6 +16,15 @@ Dependencies come from ``AppContainer``, which ``MoobbyApp`` creates once and pa
 - ``ContentView``
 - ``AppContainer``
 
+### Models
+
+KRL Green Line data, shared by features. See <doc:Map#KRL-Green-Line-Corridor> for how the map uses it.
+
+- ``GreenLineStation``
+- ``GreenLineTrack``
+- ``CorridorIncident``
+- ``NearbyTransitPoint``
+
 ### Map
 
 - <doc:Map>
