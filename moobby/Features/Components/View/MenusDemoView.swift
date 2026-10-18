@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `Menu`: a nested submenu, and a menu with a primary action on tap.
 struct MenusDemoView: View {
 
     @State private var sortOrder = "Name"

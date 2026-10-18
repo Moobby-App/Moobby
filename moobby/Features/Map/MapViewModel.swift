@@ -22,14 +22,22 @@ enum CommuteScenarioMode: String, CaseIterable, Identifiable {
 }
 
 @MainActor @Observable
+/// Runs the map's MapKit lookups: place search, and the address behind the user's dot.
+///
+/// ``MapView`` owns it with `@State`. Failures don't throw; they set ``errorMessage`` and ``isShowingError``
+/// for the view's alert.
 final class MapViewModel {
+    /// The search text. Clearing it also clears ``results``.
     var query = "" {
         didSet { if query.isEmpty { results = [] } }
     }
+    /// Places from the last search, shown as markers.
     private(set) var results: [MKMapItem] = []
     /// The place whose card is showing, e.g. the address under the user's dot.
     var selectedPlace: MKMapItem?
+    /// A sentence for the user explaining the last failure.
     var errorMessage: String?
+    /// Drives the error alert; set together with ``errorMessage``.
     var isShowingError = false
 
     // MARK: - Milestone 0B & Milestone 1 State

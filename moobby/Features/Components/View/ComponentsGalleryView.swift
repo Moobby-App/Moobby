@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Root of the Components tab: lists every ``UIComponentDemo`` and pushes its screen, hiding the tab bar while it's open.
 struct ComponentsGalleryView: View {
 
     let container: AppContainer

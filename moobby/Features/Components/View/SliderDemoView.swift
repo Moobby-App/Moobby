@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `Slider`: continuous with min/max icons, and stepped with live editing feedback.
 struct SliderDemoView: View {
 
     @State private var brightness: Double = 0.6

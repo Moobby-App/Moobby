@@ -15,7 +15,12 @@
 import SwiftUI
 import MapKit
 
+/// The Map tab: the user's dot and heading, the route, search, traffic, and a status banner when location isn't available.
+///
+/// It starts and stops `tracker` with its own visibility, and keeps search and place lookups in a ``MapViewModel``.
+/// The camera frames the user once, on the first fix; after that it stays where the user leaves it.
 struct MapView: View {
+    /// Location state, owned by ``ContentView``.
     let tracker: LocationTrackerViewModel
     @State private var model = MapViewModel()
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)

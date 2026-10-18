@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates top toolbar placements, a title menu, and toolbar search filtering a list.
 struct TopToolbarDemoView: View {
 
     private let allItems = (1...30).map { "Item \($0)" }

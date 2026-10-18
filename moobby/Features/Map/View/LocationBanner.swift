@@ -7,8 +7,11 @@
 
 import SwiftUI
 
+/// A rounded message card above the search bar, with an optional button that opens the app's Settings page.
 struct LocationBanner: View {
+    /// What's wrong and, if possible, how to fix it.
     let message: String
+    /// Shows Open Settings; use it only when the user can fix the problem there.
     let showsSettings: Bool
     @Environment(\.openURL) private var openURL
 

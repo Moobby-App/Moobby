@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates biometric login through LocalAuthentication; the logic lives in ``FaceIDDemoViewModel``.
 struct FaceIDDemoView: View {
 
     @State private var viewModel: FaceIDDemoViewModel

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `Stepper` with a range, a custom step, and custom increment/decrement handlers.
 struct StepperDemoView: View {
 
     @State private var guestCount = 2

@@ -9,12 +9,21 @@ import CoreLocation
 import Observation
 
 @MainActor @Observable
+/// Owns Core Location for the map: permission, the live position, the compass heading, and the route walked so far.
+///
+/// ``ContentView`` creates the one instance and passes it to ``MapView``, which calls ``activate()`` when it
+/// appears and ``deactivate()`` when it disappears. Views only read its state; everything is `private(set)`.
+/// See <doc:Map> for the full flow.
 final class LocationTrackerViewModel: NSObject, CLLocationManagerDelegate {
+    /// Whether the app may use location, including the system-wide Location Services switch.
     private(set) var access: Access = .unknown
+    /// The latest position; starts from the last cached fix, and is nil until there's one.
     private(set) var location: CLLocationCoordinate2D?
+    /// True while access is granted but the device can't get a fix, such as indoors or in airplane mode.
     private(set) var isLocationUnavailable = false
     /// Direction the device is facing, in degrees from north; nil when the compass is unavailable or unreliable.
     private(set) var heading: CLLocationDirection?
+    /// Positions recorded since launch, drawn as the blue line. Only fixes accurate to under 50 m are kept.
     private(set) var route: [CLLocationCoordinate2D] = []
 
     /// True when the user granted approximate location only. Stored, not read from the manager, so views refresh when it changes.
@@ -121,5 +130,6 @@ final class LocationTrackerViewModel: NSObject, CLLocationManagerDelegate {
         session = nil
     }
     
+    /// Clears ``route``.
     func reset() { route.removeAll() }
 }

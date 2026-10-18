@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `Picker` in segmented, wheel, menu and palette styles.
 struct PickerDemoView: View {
 
     private enum Size: String, CaseIterable, Identifiable {

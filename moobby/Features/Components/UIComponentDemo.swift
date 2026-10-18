@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// One entry per screen in the Components catalog, and the route ``ComponentsGalleryView`` navigates with.
+///
+/// To add a demo, add a case here and fill in ``title``, ``systemImage`` and ``destination(container:)``.
 enum UIComponentDemo: String, CaseIterable, Identifiable, Hashable {
     case alert
     case actionSheet
@@ -26,6 +29,7 @@ enum UIComponentDemo: String, CaseIterable, Identifiable, Hashable {
 
     var id: String { rawValue }
 
+    /// Row label in the gallery.
     var title: String {
         switch self {
         case .alert: "Alert"
@@ -46,6 +50,7 @@ enum UIComponentDemo: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
+    /// SF Symbol shown next to ``title``.
     var systemImage: String {
         switch self {
         case .alert: "exclamationmark.bubble"
@@ -69,6 +74,7 @@ enum UIComponentDemo: String, CaseIterable, Identifiable, Hashable {
 
 extension UIComponentDemo {
 
+    /// The demo screen to push for this entry; `container` supplies dependencies for demos that need them.
     @ViewBuilder
     @MainActor
     func destination(container: AppContainer) -> some View {

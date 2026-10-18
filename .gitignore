@@ -33,3 +33,5 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 .tokensave
 .claude
+# Local build output (docs, screenshots)
+build/
