@@ -7,6 +7,12 @@ An iOS app built with SwiftUI and MVVM. It has two tabs:
 
 Requires Xcode 26 and iOS 26.5.
 
+## Generate Mock Data 
+generate the greenline route for mock data
+```
+python3 scripts/green_line_track.py
+```
+
 ## Getting started
 
 The Xcode project is generated from `project.yml` with [XcodeGen](https://github.com/yonaskolb/XcodeGen), and `moobby.xcodeproj` is gitignored. That keeps project settings readable in PRs and avoids `.pbxproj` merge conflicts.
@@ -48,7 +54,7 @@ moobby/
 ├── Core/
 │   ├── DI/         # AppContainer
 │   ├── Logging/    # Log
-│   ├── Model/      # Shared models (Access, EmptyBody)
+│   ├── Model/      # Shared models (Access, EmptyBody) and KRL Green Line data (stations, track, incidents, transit)
 │   ├── Networking/ # APIClient, APIRequest, Endpoint, APIError
 │   ├── Security/   # Biometric auth (BiometricAuthenticating, DeviceBiometricAuthenticator)
 │   ├── Storage/    # KeyValueStore, UserDefaultStore

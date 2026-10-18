@@ -12,6 +12,10 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"
     DEVELOPMENT_TEAM: FU4TVB538X
 
+# Shown in Xcode's navigator for editing, but not built into any target.
+fileGroups:
+  - scripts
+
 targets:
   moobby:
     type: application
