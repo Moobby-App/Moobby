@@ -5,8 +5,21 @@
 //  Created by Maula Izza Azizi on 17/10/26.
 //
 
+//
+//  MapViewModel.swift
+//  moobby
+//
+//  Created by Maula Izza Azizi on 17/10/26.
+//
+
 import MapKit
 import Observation
+
+enum CommuteScenarioMode: String, CaseIterable, Identifiable {
+    case corridorIncidents = "Gangguan Rute (3 km)"
+    case nearbyTransit = "Moda Sekitar (3 km)"
+    var id: String { rawValue }
+}
 
 @MainActor @Observable
 final class MapViewModel {
@@ -19,6 +32,63 @@ final class MapViewModel {
     var errorMessage: String?
     var isShowingError = false
 
+    // MARK: - Milestone 0B & Milestone 1 State
+    let stations: [GreenLineStation] = GreenLineStation.all
+    var activeMode: CommuteScenarioMode = .corridorIncidents
+    var showCorridorRadiusCircle: Bool = true
+    var selectedIncident: CorridorIncident?
+    var selectedTransit: NearbyTransitPoint?
+
+    static let maxRadiusMeters: CLLocationDistance = 3_000 // 3 km sesuai spesifikasi Milestone 1
+
+    /// Skenario A: Menyaring berita yang berada dalam radius <= 3 km dari stasiun mana pun di sepanjang koridor Green Line
+    var corridorIncidents: [CorridorIncident] {
+        CorridorIncident.curatedSamples.filter { incident in
+            let incLoc = CLLocation(latitude: incident.latitude, longitude: incident.longitude)
+            return stations.contains { station in
+                let stLoc = CLLocation(latitude: station.latitude, longitude: station.longitude)
+                return incLoc.distance(from: stLoc) <= Self.maxRadiusMeters
+            }
+        }
+    }
+
+    /// Skenario B: Mencari titik transit/moda alternatif dalam radius <= 3 km dari posisi GPS pengguna saat ini
+    func nearbyTransits(from userCoordinate: CLLocationCoordinate2D?) -> [NearbyTransitPoint] {
+        guard let userCoordinate else { return [] }
+        let userLoc = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
+
+        var matched: [NearbyTransitPoint] = []
+        // 1. Cek titik transit multimoda sekitar
+        for var point in NearbyTransitPoint.catalog {
+            let ptLoc = CLLocation(latitude: point.latitude, longitude: point.longitude)
+            let distMeters = userLoc.distance(from: ptLoc)
+            if distMeters <= Self.maxRadiusMeters {
+                point.straightLineDistanceKm = distMeters / 1000.0
+                matched.append(point)
+            }
+        }
+        // 2. Sertakan juga stasiun KRL Green Line yang masuk radius 3 km pengguna
+        for station in stations {
+            let stLoc = CLLocation(latitude: station.latitude, longitude: station.longitude)
+            let distMeters = userLoc.distance(from: stLoc)
+            if distMeters <= Self.maxRadiusMeters {
+                matched.append(
+                    NearbyTransitPoint(
+                        id: "krl-\(station.id)",
+                        name: station.name,
+                        mode: "KRL Green Line",
+                        routesInfo: "Lin Rangkasbitung ↔ Tanah Abang (Urutan #\(station.sequence))",
+                        latitude: station.latitude,
+                        longitude: station.longitude,
+                        straightLineDistanceKm: distMeters / 1000.0
+                    )
+                )
+            }
+        }
+        return matched.sorted { ($0.straightLineDistanceKm ?? 99) < ($1.straightLineDistanceKm ?? 99) }
+    }
+
+    // MARK: - Fungsi Pencarian Asli
     /// Searches around what's on screen; returns true when there are results to frame.
     func search(in region: MKCoordinateRegion?) async -> Bool {
         let request = MKLocalSearch.Request()
