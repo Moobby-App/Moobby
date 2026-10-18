@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates text input: a validated `TextField`, a `SecureField`, and a `TextEditor` with a placeholder.
 struct TextFieldsDemoView: View {
 
     @State private var username = ""

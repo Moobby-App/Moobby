@@ -18,6 +18,9 @@ targets:
     platform: iOS
     sources:
       - path: moobby
+    scheme:
+      testTargets:
+        - moobbyUITests
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.appleacademy.moobby
@@ -29,4 +32,18 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_NSFaceIDUsageDescription: "Face ID is used to demonstrate biometric authentication in the UI Components catalog."
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Shows your position and route on the map."
+        CODE_SIGN_STYLE: Automatic
+        DOCC_MINIMUM_ACCESS_LEVEL: internal
+
+  moobbyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: moobbyUITests
+    dependencies:
+      - target: moobby
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.appleacademy.moobbyUITests
+        GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic

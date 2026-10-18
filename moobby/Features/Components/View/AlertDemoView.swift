@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `alert`: a plain alert, a destructive confirmation, and one with a text field.
 struct AlertDemoView: View {
 
     @State private var showSimpleAlert = false

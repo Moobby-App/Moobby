@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates an editable `List`: leading and trailing swipe actions, delete, reorder, and multi-select in edit mode.
 struct ListDemoView: View {
 
     private struct Task: Identifiable, Hashable {

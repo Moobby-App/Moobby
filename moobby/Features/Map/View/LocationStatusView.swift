@@ -9,6 +9,7 @@ import SwiftUI
 
 /// Explains why the user's position isn't on the map, if it isn't.
 struct LocationStatusView: View {
+    /// The state to explain.
     let tracker: LocationTrackerViewModel
 
     var body: some View {

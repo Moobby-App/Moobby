@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `contextMenu` with a custom preview on a long-pressed card.
 struct ContextMenuDemoView: View {
 
     @State private var isFavorite = false

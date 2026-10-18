@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates a `TabView` with a badge, a search-role tab, and the iOS 26 minimize-on-scroll tab bar.
 struct TabBarDemoView: View {
 
     private enum DemoTab: Hashable {

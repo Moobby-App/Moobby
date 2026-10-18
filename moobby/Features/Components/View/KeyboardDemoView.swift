@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates keyboard types, submit labels that move focus between fields, and a keyboard accessory toolbar.
 struct KeyboardDemoView: View {
 
     private enum Field: Hashable {

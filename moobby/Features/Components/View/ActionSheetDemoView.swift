@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates `confirmationDialog`, iOS's action sheet, with a destructive and a cancel option.
 struct ActionSheetDemoView: View {
 
     @State private var showDialog = false

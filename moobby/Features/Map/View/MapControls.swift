@@ -9,8 +9,11 @@ import SwiftUI
 
 /// Apple Maps–style floating stack: traffic toggle above recenter, sharing one glass capsule.
 struct MapControls: View {
+    /// Whether the map draws live traffic; the top button toggles it.
     @Binding var showsTraffic: Bool
+    /// Enables the location button; pass false until there's a position to go to.
     let canRecenter: Bool
+    /// Called when the location button is tapped.
     let recenter: () -> Void
 
     var body: some View {

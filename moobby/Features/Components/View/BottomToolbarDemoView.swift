@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates bottom-bar toolbar items, grouped and split with a `ToolbarSpacer`.
 struct BottomToolbarDemoView: View {
 
     @State private var lastAction = "None"

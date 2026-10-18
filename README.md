@@ -21,6 +21,25 @@ Re-run `xcodegen generate` whenever you add, remove, or move a Swift file. Xcode
 
 Info.plist values live in `project.yml` as build settings, and each one needs the `INFOPLIST_KEY_` prefix. Without it the key never reaches Info.plist. For location, that means iOS never shows the permission prompt.
 
+## Documentation
+
+API docs are built with DocC from `moobby/Moobby.docc` and the `///` comments in the code. In Xcode, choose **Product › Build Documentation** (⌃⇧⌘D). From the command line:
+
+```bash
+xcodebuild docbuild -project moobby.xcodeproj -scheme moobby -destination 'generic/platform=iOS Simulator'
+```
+
+**Using the Components** (`UsingComponents.md`) shows a code example and a screenshot for every control. The screenshots come from a UI test that opens each demo. To regenerate them after changing a component, boot an iPhone simulator and run:
+
+```bash
+TEST_RUNNER_SCREENSHOT_DIR="$PWD/moobby/Moobby.docc/Resources" \
+  xcodebuild test -project moobby.xcodeproj -scheme moobby -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
+```
+
+When `Executed 1 test, with 0 failures` appears, the images are written; `xcodebuild` may keep running after that, so press Ctrl+C if it does.
+
+`DOCC_MINIMUM_ACCESS_LEVEL: internal` in `project.yml` makes the app's internal types show up in the docs. When you add a type, list it under a topic in `Moobby.md`.
+
 ## Folder structure
 
 ```text
@@ -84,3 +103,5 @@ func fetchUser() async {
 ```
 
 Drive it from the view with `.task { await viewModel.fetchUser() }`. SwiftUI cancels the task when the view disappears.
+
+The **Networking** article in the DocC docs covers the rest: development vs. production, request bodies, and which errors to handle.

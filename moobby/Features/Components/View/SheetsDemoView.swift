@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Demonstrates sheets: a medium detent, a large one that can't be swiped away, and one driven by an item.
 struct SheetsDemoView: View {
 
     private struct SheetItem: Identifiable {
@@ -54,6 +55,7 @@ struct SheetsDemoView: View {
     }
 }
 
+/// Body of every sheet in ``SheetsDemoView``, with a Done button that dismisses it.
 private struct SheetContent: View {
 
     let title: String
