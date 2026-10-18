@@ -5,39 +5,32 @@
 //  Created by Maula Izza Azizi on 17/10/26.
 //
 
-//
-//  MapViewModel.swift
-//  moobby
-//
-//  Created by Maula Izza Azizi on 17/10/26.
-//
-
 import MapKit
 import Observation
 
 enum CommuteScenarioMode: String, CaseIterable, Identifiable {
-    case corridorIncidents = "Gangguan Rute (3 km)"
-    case nearbyTransit = "Moda Sekitar (3 km)"
+    case corridorIncidents = "Route Disruptions (3 km)"
+    case nearbyTransit = "Nearby Modes (3 km)"
     var id: String { rawValue }
 }
 
 @MainActor @Observable
-/// Runs the map's MapKit lookups: place search, and the address behind the user's dot.
-///
-/// ``MapView`` owns it with `@State`. Failures don't throw; they set ``errorMessage`` and ``isShowingError``
-/// for the view's alert.
+// Runs the map's MapKit lookups: place search, and the address behind the user's dot.
+//
+// ``MapView`` owns it with `@State`. Failures don't throw; they set ``errorMessage`` and ``isShowingError``
+// for the view's alert.
 final class MapViewModel {
-    /// The search text. Clearing it also clears ``results``.
+    // The search text. Clearing it also clears ``results``.
     var query = "" {
         didSet { if query.isEmpty { results = [] } }
     }
-    /// Places from the last search, shown as markers.
+    // Places from the last search, shown as markers.
     private(set) var results: [MKMapItem] = []
-    /// The place whose card is showing, e.g. the address under the user's dot.
+    // The place whose card is showing, e.g. the address under the user's dot.
     var selectedPlace: MKMapItem?
-    /// A sentence for the user explaining the last failure.
+    // A sentence for the user explaining the last failure.
     var errorMessage: String?
-    /// Drives the error alert; set together with ``errorMessage``.
+    // Drives the error alert; set together with ``errorMessage``.
     var isShowingError = false
 
     // MARK: - Milestone 0B & Milestone 1 State
@@ -47,9 +40,9 @@ final class MapViewModel {
     var selectedIncident: CorridorIncident?
     var selectedTransit: NearbyTransitPoint?
 
-    static let maxRadiusMeters: CLLocationDistance = 3_000 // 3 km sesuai spesifikasi Milestone 1
+    static let maxRadiusMeters: CLLocationDistance = 3_000 // 3 km per Milestone 1 spec
 
-    /// Skenario A: Menyaring berita yang berada dalam radius <= 3 km dari stasiun mana pun di sepanjang koridor Green Line
+    // Scenario A: Filter news within ≤ 3 km of any station along the Green Line corridor
     var corridorIncidents: [CorridorIncident] {
         CorridorIncident.curatedSamples.filter { incident in
             let incLoc = CLLocation(latitude: incident.latitude, longitude: incident.longitude)
@@ -60,13 +53,13 @@ final class MapViewModel {
         }
     }
 
-    /// Skenario B: Mencari titik transit/moda alternatif dalam radius <= 3 km dari posisi GPS pengguna saat ini
+    // Scenario B: Find transit points/alternative modes within ≤ 3 km of the user's current GPS position
     func nearbyTransits(from userCoordinate: CLLocationCoordinate2D?) -> [NearbyTransitPoint] {
         guard let userCoordinate else { return [] }
         let userLoc = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
 
         var matched: [NearbyTransitPoint] = []
-        // 1. Cek titik transit multimoda sekitar
+        // 1. Check nearby multimodal transit points
         for var point in NearbyTransitPoint.catalog {
             let ptLoc = CLLocation(latitude: point.latitude, longitude: point.longitude)
             let distMeters = userLoc.distance(from: ptLoc)
@@ -75,7 +68,7 @@ final class MapViewModel {
                 matched.append(point)
             }
         }
-        // 2. Sertakan juga stasiun KRL Green Line yang masuk radius 3 km pengguna
+        // 2. Also include KRL Green Line stations within 3 km of the user
         for station in stations {
             let stLoc = CLLocation(latitude: station.latitude, longitude: station.longitude)
             let distMeters = userLoc.distance(from: stLoc)
@@ -96,8 +89,8 @@ final class MapViewModel {
         return matched.sorted { ($0.straightLineDistanceKm ?? 99) < ($1.straightLineDistanceKm ?? 99) }
     }
 
-    // MARK: - Fungsi Pencarian Asli
-    /// Searches around what's on screen; returns true when there are results to frame.
+    // MARK: - Original Search Functions
+    // Searches around what's on screen; returns true when there are results to frame.
     func search(in region: MKCoordinateRegion?) async -> Bool {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = query
@@ -113,7 +106,7 @@ final class MapViewModel {
         return !results.isEmpty
     }
 
-    /// Looks up the address under a coordinate and opens MapKit's own place card for it.
+    // Looks up the address under a coordinate and opens MapKit's own place card for it.
     func showPlace(at coordinate: CLLocationCoordinate2D) async {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         guard let request = MKReverseGeocodingRequest(location: location) else { return }
@@ -129,3 +122,4 @@ final class MapViewModel {
         isShowingError = true
     }
 }
+

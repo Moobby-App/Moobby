@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-// MARK: - 1. Model Stasiun KRL Green Line (Milestone 0B)
+// MARK: - 1. KRL Green Line Station Model (Milestone 0B)
 struct GreenLineStation: Identifiable, Hashable {
     let id: String
     let name: String
@@ -36,11 +36,11 @@ struct GreenLineStation: Identifiable, Hashable {
     ]
 }
 
-// MARK: - 2. Model Berita & Gangguan Sepanjang Koridor 3 km (Milestone 1 - Skenario A)
+// MARK: - 2. News & Disruptions Along the 3 km Corridor (Milestone 1 - Scenario A)
 struct CorridorIncident: Identifiable, Hashable {
     let id: String
     let title: String
-    let category: String // "service_disruption" atau "incident"
+    let category: String // "service_disruption" or "incident"
     let locationName: String
     let latitude: Double
     let longitude: Double
@@ -49,7 +49,7 @@ struct CorridorIncident: Identifiable, Hashable {
     let distanceToStationKm: Double
     let publishedAt: String
     let sourceName: String
-    let verificationStatus: String // "verified" atau "unverified"
+    let verificationStatus: String // "verified" or "unverified"
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -119,7 +119,7 @@ struct CorridorIncident: Identifiable, Hashable {
     ]
 }
 
-// MARK: - 3. Model Titik Transit Sekitar Pengguna Radius 3 km (Milestone 1 - Skenario B)
+// MARK: - 3. Nearby Transit Points within 3 km of the User (Milestone 1 - Scenario B)
 struct NearbyTransitPoint: Identifiable, Hashable {
     let id: String
     let name: String
@@ -134,18 +134,19 @@ struct NearbyTransitPoint: Identifiable, Hashable {
     }
 
     static let catalog: [NearbyTransitPoint] = [
-        // Sekitar Tanah Abang & Palmerah
+        // Around Tanah Abang & Palmerah
         NearbyTransitPoint(id: "tr-01", name: "Halte JakLingko / Explorer Tanah Abang", mode: "TransJakarta", routesInfo: "Rute 1H, 1N, 1R, 8C, 8M, 9D", latitude: -6.1862, longitude: 106.8118),
         NearbyTransitPoint(id: "tr-02", name: "Halte Stasiun Palmerah", mode: "TransJakarta", routesInfo: "Rute 1B, 1F, 8C, S41", latitude: -6.2075, longitude: 106.7976),
-        // Sekitar Kebayoran (Sesuai cerita riset Velbak & Koridor 8/13)
+        // Around Kebayoran (Per research context Velbak & Corridors 8/13)
         NearbyTransitPoint(id: "tr-03", name: "Halte TransJakarta Velbak", mode: "TransJakarta", routesInfo: "Koridor 13 (Ciledug - Tendean), 13B, L13E", latitude: -6.2394, longitude: 106.7836),
         NearbyTransitPoint(id: "tr-04", name: "Halte Pasar Kebayoran Lama", mode: "TransJakarta", routesInfo: "Koridor 8 (Lebak Bulus - Pasar Baru), 8D, 8E", latitude: -6.2381, longitude: 106.7818),
         NearbyTransitPoint(id: "tr-05", name: "Stasiun MRT ASEAN", mode: "MRT Jakarta", routesInfo: "Lin Utara-Selatan (Lebak Bulus - Bundaran HI)", latitude: -6.2397, longitude: 106.7984),
-        // Sekitar Pondok Ranji, Jurangmangu & Sudimara
+        // Around Pondok Ranji, Jurangmangu & Sudimara
         NearbyTransitPoint(id: "tr-06", name: "Shelters In-Trans Bintaro XChange (Jurangmangu)", mode: "Shuttle Bus", routesInfo: "Feeder Bintaro Jaya & Royaltrans S31", latitude: -6.2869, longitude: 106.7280),
         NearbyTransitPoint(id: "tr-07", name: "Terminal Angkot & Ojol Sudimara", mode: "Angkot / Feeder", routesInfo: "Rute C09 (Ciputat - Pondok Labu) & D15", latitude: -6.2971, longitude: 106.7131),
-        // Sekitar Rawa Buntu, Serpong & Cisauk
+        // Around Rawa Buntu, Serpong & Cisauk
         NearbyTransitPoint(id: "tr-08", name: "Terminal Intermoda BSD (Stasiun Cisauk)", mode: "BSD Link / Bus", routesInfo: "BSD Link Free Shuttle (The Breeze, AEON, ICE)", latitude: -6.3253, longitude: 106.6419),
         NearbyTransitPoint(id: "tr-09", name: "Halte Feeder TransJakarta BSD City", mode: "TransJakarta", routesInfo: "Rute S11 (BSD - Jelambar)", latitude: -6.3130, longitude: 106.6750)
     ]
 }
+

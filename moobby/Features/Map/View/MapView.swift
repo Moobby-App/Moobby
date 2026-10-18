@@ -38,7 +38,7 @@ struct MapView: View {
 
     var body: some View {
         Map(position: $camera) {
-            // 1. Anotasi Lokasi Pengguna (Kode Asli Teman Anda)
+            // 1. User Location Annotation (Original code from your teammate)
             if tracker.isApproximate {
                 UserAnnotation()
             } else {
@@ -50,26 +50,26 @@ struct MapView: View {
                 }
             }
 
-            // 2. Jejak Perjalanan Pengguna
+            // 2. User Route Polyline
             if tracker.route.count > 1 {
                 MapPolyline(coordinates: tracker.route)
                     .stroke(.blue, lineWidth: 5)
             }
 
-            // 3. MILESTONE 0B: Garis Koridor & Stasiun KRL Green Line
+            // 3. MILESTONE 0B: Corridor Line & KRL Green Line Stations
             MapPolyline(coordinates: model.stations.map(\.coordinate))
                 .stroke(.green, lineWidth: 4)
 
             if model.showCorridorRadiusCircle {
                 if model.activeMode == .corridorIncidents {
-                    // Skenario A: Radius 3 km di sepanjang stasiun koridor Green Line
+                    // Scenario A: 3 km radius around each station along the Green Line corridor
                     ForEach(model.stations) { station in
                         MapCircle(center: station.coordinate, radius: MapViewModel.maxRadiusMeters)
                             .foregroundStyle(.green.opacity(0.05))
                             .stroke(.green.opacity(0.25), lineWidth: 1)
                     }
                 } else if let userCoord = tracker.location {
-                    // Skenario B: Radius 3 km berpusat pada posisi GPS pengguna saat ini
+                    // Scenario B: 3 km radius centered on the user's current GPS position
                     MapCircle(center: userCoord, radius: MapViewModel.maxRadiusMeters)
                         .foregroundStyle(.blue.opacity(0.08))
                         .stroke(.blue.opacity(0.4), lineWidth: 1.5)
@@ -95,7 +95,7 @@ struct MapView: View {
                 }
             }
 
-            // 4. MILESTONE 1 (Skenario A): Pin Berita/Gangguan Koridor 3 km
+            // 4. MILESTONE 1 (Scenario A): Pins for News/Disruptions within the 3 km corridor
             ForEach(model.corridorIncidents) { incident in
                 Annotation(incident.locationName, coordinate: incident.coordinate) {
                     Button {
@@ -118,7 +118,7 @@ struct MapView: View {
                 }
             }
 
-            // 5. MILESTONE 1 (Skenario B): Pin Moda/Titik Transit dalam Radius 3 km Pengguna
+            // 5. MILESTONE 1 (Scenario B): Pins for Modes/Transit Points within 3 km of the user
             if model.activeMode == .nearbyTransit {
                 ForEach(nearbyTransitList) { transit in
                     Annotation(transit.name, coordinate: transit.coordinate) {
@@ -137,7 +137,7 @@ struct MapView: View {
                 }
             }
 
-            // 6. Hasil Pencarian MKLocalSearch
+            // 6. MKLocalSearch Results
             ForEach(model.results, id: \.self) { Marker(item: $0) }
         }
         .mapStyle(.standard(pointsOfInterest: .all, showsTraffic: showsTraffic))
@@ -186,7 +186,7 @@ struct MapView: View {
         .onChange(of: tracker.location != nil, initial: true) { frameUserOnce() }
     }
 
-    // MARK: - Subviews untuk Milestone 0B & Milestone 1
+    // MARK: - Subviews for Milestone 0B & Milestone 1
     private var greenLineHeaderBar: some View {
         VStack(spacing: 8) {
             HStack {
@@ -199,7 +199,7 @@ struct MapView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button("Lihat Koridor") {
+                Button("View Corridor") {
                     withAnimation {
                         camera = .region(
                             MKCoordinateRegion(
@@ -214,7 +214,7 @@ struct MapView: View {
                 .controlSize(.mini)
             }
 
-            Picker("Mode Skenario", selection: $model.activeMode) {
+            Picker("Scenario Mode", selection: $model.activeMode) {
                 ForEach(CommuteScenarioMode.allCases) { mode in
                     Text(mode.rawValue).tag(mode)
                 }
@@ -248,12 +248,12 @@ struct MapView: View {
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 HStack {
-                                    Text(incident.isVerified ? "Terverifikasi" : "Info Sekitar (Belum Terverifikasi)")
+                                    Text(incident.isVerified ? "Verified" : "Nearby Info (Unverified)")
                                         .font(.caption2)
                                         .fontWeight(.bold)
                                         .foregroundStyle(incident.isVerified ? .red : .orange)
                                     Spacer()
-                                    Text("\(String(format: "%.2f", incident.distanceToStationKm)) km dr \(incident.nearestStationId)")
+                                    Text("\(String(format: "%.2f", incident.distanceToStationKm)) km from \(incident.nearestStationId)")
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                 }
@@ -275,7 +275,7 @@ struct MapView: View {
                     }
                 } else {
                     if nearbyTransitList.isEmpty {
-                        Text("Tidak ada titik transit terdata dalam radius 3 km dari posisi Anda saat ini. Coba arahkan lokasi Simulator ke area stasiun Green Line.")
+                        Text("No transit points found within 3 km of your current position. Try setting the Simulator's location near a Green Line station.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .padding(10)
@@ -304,7 +304,7 @@ struct MapView: View {
                                             .foregroundStyle(.blue)
                                         Spacer()
                                         if let dist = transit.straightLineDistanceKm {
-                                            Text("\(String(format: "%.2f", dist)) km (garis lurus)")
+                                            Text("\(String(format: "%.2f", dist)) km (straight-line)")
                                                 .font(.caption2)
                                                 .foregroundStyle(.secondary)
                                         }
@@ -335,7 +335,7 @@ struct MapView: View {
     private func incidentDetailSheet(_ incident: CorridorIncident) -> some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 14) {
-                Text(incident.isVerified ? "GANGGUAN OPERASIONAL TERVERIFIKASI" : "KEJADIAN SEKITAR KORIDOR (BELUM TERVERIFIKASI)")
+                Text(incident.isVerified ? "VERIFIED OPERATIONAL DISRUPTION" : "CORRIDOR-ADJACENT INCIDENT (UNVERIFIED)")
                     .font(.caption)
                     .fontWeight(.bold)
                     .foregroundStyle(incident.isVerified ? .red : .orange)
@@ -344,10 +344,10 @@ struct MapView: View {
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("Lokasi: \(incident.locationName)", systemImage: "mappin.and.ellipse")
-                    Label("Stasiun Terdekat: \(incident.nearestStationName) (\(String(format: "%.2f", incident.distanceToStationKm)) km garis lurus)", systemImage: "tram.fill")
-                    Label("Waktu: \(incident.publishedAt)", systemImage: "clock")
-                    Label("Sumber: \(incident.sourceName)", systemImage: "newspaper")
+                    Label("Location: \(incident.locationName)", systemImage: "mappin.and.ellipse")
+                    Label("Nearest Station: \(incident.nearestStationName) (\(String(format: "%.2f", incident.distanceToStationKm)) km straight-line)", systemImage: "tram.fill")
+                    Label("Time: \(incident.publishedAt)", systemImage: "clock")
+                    Label("Source: \(incident.sourceName)", systemImage: "newspaper")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -355,8 +355,8 @@ struct MapView: View {
                 Divider()
 
                 Text(incident.isVerified
-                     ? "Informasi ini berasal dari sumber operasional dan berdampak langsung pada perjalanan KRL Green Line."
-                     : "Kejadian ini berada dalam koridor ≤ 3 km rute Green Line. Kedekatan geografis belum tentu menghentikan operasional kereta, namun dapat memengaruhi akses di sekitar stasiun.")
+                     ? "This information comes from operational sources and directly impacts KRL Green Line service."
+                     : "This incident falls within ≤ 3 km of the Green Line route. Geographic proximity doesn't always stop train operations, but it can affect access around stations.")
                     .font(.footnote)
                     .padding()
                     .background(Color(.secondarySystemBackground))
@@ -365,7 +365,7 @@ struct MapView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("Detail Kejadian Rute")
+            .navigationTitle("Route Incident Details")
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium])
@@ -383,18 +383,18 @@ struct MapView: View {
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("Layanan / Rute: \(transit.routesInfo)", systemImage: "bus.fill")
+                    Label("Service / Routes: \(transit.routesInfo)", systemImage: "bus.fill")
                     if let dist = transit.straightLineDistanceKm {
-                        Label("Jarak Garis Lurus: \(String(format: "%.2f", dist)) km dari posisi Anda", systemImage: "ruler")
+                        Label("Straight-Line Distance: \(String(format: "%.2f", dist)) km from your position", systemImage: "ruler")
                     }
-                    Label("Jarak Berjalan Kaki: Belum tersedia pada prototype ini", systemImage: "figure.walk")
+                    Label("Walking Distance: Not available in this prototype", systemImage: "figure.walk")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
                 Divider()
 
-                Text("Catatan Prototype: Jarak yang ditampilkan adalah jarak garis lurus (straight-line distance) dalam radius ≤ 3 km dari lokasi pengguna, bukan jarak rute berjalan kaki aktual.")
+                Text("Prototype Note: The distance shown is straight-line distance within ≤ 3 km of the user's location, not the actual walking route distance.")
                     .font(.footnote)
                     .padding()
                     .background(Color(.secondarySystemBackground))
@@ -403,7 +403,7 @@ struct MapView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("Detail Titik Transit")
+            .navigationTitle("Transit Point Details")
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium])
@@ -456,3 +456,4 @@ struct MapView: View {
         tracker.setHeadingOrientation(clOrientation)
     }
 }
+
