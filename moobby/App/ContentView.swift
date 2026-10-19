@@ -28,18 +28,26 @@ struct ContentView: View {
     @State private var mapTracker = LocationTrackerViewModel()
 
     var body: some View {
-        TabView {
-            Tab("Map", systemImage: "map.fill") {
-                NavigationStack {
-                    MapView(tracker: mapTracker)
-                }
-            }
-
-            Tab("Components", systemImage: "square.grid.2x2") {
-                NavigationStack {
-                    ComponentsGalleryView(container: container)
-                }
-            }
+        NavigationStack {
+            RouteSearchView(tracker: mapTracker)
         }
+//        MapView(tracker: mapTracker)
+//        TabView {
+//            Tab("Map", systemImage: "map.fill") {
+//                NavigationStack {
+//                    MapView(tracker: mapTracker)
+//                }
+//            }
+//
+//            Tab("Components", systemImage: "square.grid.2x2") {
+//                NavigationStack {
+//                    ComponentsGalleryView(container: container)
+//                }
+//            }
+//        }
     }
+}
+
+#Preview {
+    ContentView(container: AppContainer())
 }

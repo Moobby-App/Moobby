@@ -24,6 +24,7 @@ targets:
       - path: moobby
     scheme:
       testTargets:
+        - moobbyTests
         - moobbyUITests
     settings:
       base:
@@ -38,6 +39,19 @@ targets:
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Shows your position and route on the map."
         CODE_SIGN_STYLE: Automatic
         DOCC_MINIMUM_ACCESS_LEVEL: internal
+
+  moobbyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: moobbyTests
+    dependencies:
+      - target: moobby
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.appleacademy.moobbyTests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
 
   moobbyUITests:
     type: bundle.ui-testing
