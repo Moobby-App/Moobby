@@ -28,6 +28,14 @@ struct MapView: View {
     @State private var hasFramedUser = false
     @State private var visibleRegion: MKCoordinateRegion?
     @State private var showsTraffic = false
+    @State private var listSheet: ListSheet?
+
+    /// The list sheets opened from the buttons above the carousel.
+    private enum ListSheet: String, Identifiable {
+        case routeDisruption = "Route Disruption"
+        case nearbyModes = "Nearby Modes"
+        var id: Self { self }
+    }
 
     private static let localSpan: CLLocationDistance = 1_000
     private static let approximateSpan: CLLocationDistance = 10_000
@@ -162,9 +170,18 @@ struct MapView: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 8) {
+                HStack {
+                    Button(ListSheet.routeDisruption.rawValue, systemImage: "exclamationmark.triangle.fill") {
+                        listSheet = .routeDisruption
+                    }
+                    Button(ListSheet.nearbyModes.rawValue, systemImage: "bus.fill") {
+                        listSheet = .nearbyModes
+                    }
+                }
+                .buttonStyle(.glass)
                 milestoneCarouselPanel
                 LocationStatusView(tracker: tracker)
-                MapSearchBar(query: $model.query, search: search)
+//                MapSearchBar(query: $model.query, search: search)
             }
         }
         .onAppear {
@@ -179,6 +196,12 @@ struct MapView: View {
         }
         .sheet(item: $model.selectedTransit) { transit in
             transitDetailSheet(transit)
+        }
+        .sheet(item: $listSheet) { sheet in
+            listSheetContent(sheet)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
         }
         .alert(model.errorMessage ?? "", isPresented: $model.isShowingError) { }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
@@ -335,6 +358,53 @@ struct MapView: View {
                 }
             }
             .padding(.horizontal)
+        }
+    }
+
+    /// Same layout as `SheetContent` in ``SheetsDemoView``: a title, the body, and a Done button.
+    private func listSheetContent(_ sheet: ListSheet) -> some View {
+        NavigationStack {
+            List {
+                switch sheet {
+                case .routeDisruption:
+                    ForEach(model.corridorIncidents) { incident in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(incident.isVerified ? "Verified" : "Nearby Info (Unverified)")
+                                .typography(.caption)
+                                .foregroundStyle(incident.isVerified ? .red : .orange)
+                            Text(incident.title)
+                                .typography(.body)
+                            Text("\(incident.locationName) · \(String(format: "%.2f", incident.distanceToStationKm)) km from \(incident.nearestStationId)")
+                                .typography(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                case .nearbyModes:
+                    if nearbyTransitList.isEmpty {
+                        Text("No transit points found within 3 km of your current position.")
+                            .typography(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                    ForEach(nearbyTransitList) { transit in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(transit.mode)
+                                .typography(.caption)
+                                .foregroundStyle(.blue)
+                            Text(transit.name)
+                                .typography(.body)
+                            Text(transit.routesInfo)
+                                .typography(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+            .navigationTitle(sheet.rawValue)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { listSheet = nil }
+                }
+            }
         }
     }
 
