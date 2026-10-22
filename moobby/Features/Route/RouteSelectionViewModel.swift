@@ -42,8 +42,12 @@ final class RouteSelectionViewModel {
     /// Shared services, passed on to Kondisi Rute.
     let container: AppContainer
 
-    init(container: AppContainer) {
+    /// The route shared with tab Berita; set when both stations are picked, cleared when a field is cleared.
+    private let routeSelection: RouteSelection
+
+    init(container: AppContainer, routeSelection: RouteSelection) {
         self.container = container
+        self.routeSelection = routeSelection
     }
 
     /// The stations matching the active field's text, in line order. All of them when the text is empty.
@@ -73,6 +77,9 @@ final class RouteSelectionViewModel {
             destinationQuery = text
             if text != destination?.shortName { destination = nil }
         }
+        if departure == nil || destination == nil {
+            routeSelection.clear()
+        }
     }
 
     /// Picks `station` for the active field, moves to the other field, and opens Kondisi Rute once both
@@ -97,6 +104,7 @@ final class RouteSelectionViewModel {
         }
 
         if let departure, let destination {
+            routeSelection.set(departure: departure, destination: destination)
             path = [.condition(departure: departure, destination: destination)]
         }
     }

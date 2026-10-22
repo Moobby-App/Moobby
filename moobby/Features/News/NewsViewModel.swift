@@ -30,27 +30,45 @@ final class NewsViewModel {
     private(set) var state: State = .loading
 
     private let container: AppContainer
+    /// The route picked in tab Rute, if any.
+    private let routeSelection: RouteSelection
 
-    init(container: AppContainer) {
+    init(container: AppContainer, routeSelection: RouteSelection) {
         self.container = container
+        self.routeSelection = routeSelection
     }
 
-    /// Every loaded incident, newest first. Empty while loading or after an error.
+    /// Every loaded Green Line incident, newest first. Empty while loading or after an error.
+    /// Semua Berita shows these (AC17).
     var incidents: [Incident] {
         if case .loaded(let incidents) = state { return incidents }
         return []
     }
 
-    /// The incidents on the tab: the newest ``previewLimit``.
+    /// The picked route's title, such as `"Kebayoran – Cisauk"`, or `nil` before a route is picked.
+    var routeTitle: String? {
+        routeSelection.title
+    }
+
+    /// The incidents tab Berita is about: all of them before a route is picked, then only those on the
+    /// route's segment (SPEC Rules → News relevance).
+    ///
+    /// Covers AC16 and AC28.
+    var relevantIncidents: [Incident] {
+        guard let segment = routeSelection.segment else { return incidents }
+        return Incident.onSegment(incidents, segment: segment)
+    }
+
+    /// The cards on the tab: the newest ``previewLimit`` relevant incidents.
     ///
     /// Covers AC16.
     var latestIncidents: [Incident] {
-        Array(incidents.prefix(Self.previewLimit))
+        Array(relevantIncidents.prefix(Self.previewLimit))
     }
 
-    /// The count label, such as `"4 berita"`.
+    /// The count label, such as `"3 berita"`: how many relevant incidents there are (AC28).
     var countLabel: String {
-        "\(incidents.count) berita"
+        "\(relevantIncidents.count) berita"
     }
 
     /// Loads incidents the first time the tab appears; later appearances keep what's there.

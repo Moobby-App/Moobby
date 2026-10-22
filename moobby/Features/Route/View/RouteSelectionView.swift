@@ -130,5 +130,5 @@ private struct StationPickerRow: View {
 }
 
 #Preview {
-    RouteSelectionView(viewModel: RouteSelectionViewModel(container: AppContainer()))
+    RouteSelectionView(viewModel: RouteSelectionViewModel(container: AppContainer(), routeSelection: RouteSelection()))
 }

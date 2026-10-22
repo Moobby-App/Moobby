@@ -33,6 +33,12 @@ struct NewsView: View {
                     }
                 }
 
+                if let routeTitle = viewModel.routeTitle {
+                    Label("Rute \(routeTitle)", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                        .typography(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 content
             }
             .padding()
@@ -73,6 +79,14 @@ struct NewsView: View {
         case .loaded(let incidents) where incidents.isEmpty:
             ContentUnavailableView("Belum ada informasi gangguan", systemImage: "checkmark.circle")
 
+        case .loaded where viewModel.relevantIncidents.isEmpty:
+            ContentUnavailableView(
+                "Tidak ada gangguan di rute ini",
+                systemImage: "checkmark.circle",
+                description: Text("Lihat semua berita untuk gangguan lain di Green Line.")
+            )
+            allNewsButton
+
         case .loaded:
             ForEach(viewModel.latestIncidents) { incident in
                 NavigationLink(value: NewsRoute.detail(incident)) {
@@ -81,14 +95,19 @@ struct NewsView: View {
                 .buttonStyle(.plain)
             }
 
-            NavigationLink(value: NewsRoute.allNews) {
-                Text("Lihat semua berita")
-                    .typography(.button)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.glass)
-            .controlSize(.large)
+            allNewsButton
         }
+    }
+
+    /// Opens Semua Berita (AC17).
+    private var allNewsButton: some View {
+        NavigationLink(value: NewsRoute.allNews) {
+            Text("Lihat semua berita")
+                .typography(.button)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.glass)
+        .controlSize(.large)
     }
 }
 
@@ -108,6 +127,6 @@ private struct GreenLineBadge: View {
 
 #Preview {
     NavigationStack {
-        NewsView(viewModel: NewsViewModel(container: AppContainer()))
+        NewsView(viewModel: NewsViewModel(container: AppContainer(), routeSelection: RouteSelection()))
     }
 }
