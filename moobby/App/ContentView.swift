@@ -33,7 +33,7 @@ struct ContentView: View {
         TabView {
             Tab("Berita", systemImage: "newspaper") {
                 NavigationStack {
-                    NewsView()
+                    NewsView(viewModel: NewsViewModel(container: container))
                 }
             }
 
