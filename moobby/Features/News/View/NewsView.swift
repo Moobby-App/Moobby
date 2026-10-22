@@ -9,8 +9,7 @@ import SwiftUI
 
 /// Tab Berita: the latest Green Line disruption news.
 ///
-/// Thin: it draws ``NewsViewModel/state`` and forwards taps. "Lihat semua berita" and the Detail Berita
-/// page come in Task 6.
+/// Thin: it draws ``NewsViewModel/state`` and forwards taps. Navigation uses ``NewsRoute``.
 struct NewsView: View {
     @State private var viewModel: NewsViewModel
 
@@ -39,6 +38,14 @@ struct NewsView: View {
             .padding()
         }
         .navigationTitle("Moobby")
+        .navigationDestination(for: NewsRoute.self) { route in
+            switch route {
+            case .allNews:
+                AllNewsView(viewModel: viewModel)
+            case .detail(let incident):
+                NewsDetailView(incident: incident)
+            }
+        }
         .task { await viewModel.loadIfNeeded() }
         .refreshable { await viewModel.load() }
     }
@@ -68,8 +75,19 @@ struct NewsView: View {
 
         case .loaded:
             ForEach(viewModel.latestIncidents) { incident in
-                NewsCard(incident: incident)
+                NavigationLink(value: NewsRoute.detail(incident)) {
+                    NewsCard(incident: incident)
+                }
+                .buttonStyle(.plain)
             }
+
+            NavigationLink(value: NewsRoute.allNews) {
+                Text("Lihat semua berita")
+                    .typography(.button)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glass)
+            .controlSize(.large)
         }
     }
 }

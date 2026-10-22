@@ -8,6 +8,7 @@
 import SwiftUI
 
 /// One disruption on tab Berita: title, short description and time, on an orange card (Decision 8).
+/// The chevron shows it opens Detail Berita.
 ///
 /// Covers AC16 (title, description and news time on each card).
 struct NewsCard: View {
@@ -35,7 +36,12 @@ struct NewsCard: View {
                 .typography(.caption)
                 .foregroundStyle(.orange)
         }
+        .padding(.trailing, 20)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .trailing) {
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.tertiary)
+        }
         .padding()
         .background(.orange.opacity(0.15), in: .rect(cornerRadius: 16))
         .accessibilityElement(children: .combine)
