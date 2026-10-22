@@ -39,7 +39,7 @@ struct ContentView: View {
 
             Tab("Rute", systemImage: "tram") {
                 // RouteSelectionView owns its NavigationStack so it can open Kondisi Rute after the second pick.
-                RouteSelectionView(viewModel: RouteSelectionViewModel())
+                RouteSelectionView(viewModel: RouteSelectionViewModel(container: container))
             }
         }
     }

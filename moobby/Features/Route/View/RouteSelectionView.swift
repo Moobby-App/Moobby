@@ -55,7 +55,11 @@ struct RouteSelectionView: View {
             .navigationDestination(for: RouteScreen.self) { screen in
                 switch screen {
                 case .condition(let departure, let destination):
-                    RouteConditionView(departure: departure, destination: destination)
+                    RouteConditionView(viewModel: RouteConditionViewModel(
+                        container: viewModel.container,
+                        departure: departure,
+                        destination: destination
+                    ))
                 }
             }
         }
@@ -126,5 +130,5 @@ private struct StationPickerRow: View {
 }
 
 #Preview {
-    RouteSelectionView(viewModel: RouteSelectionViewModel())
+    RouteSelectionView(viewModel: RouteSelectionViewModel(container: AppContainer()))
 }

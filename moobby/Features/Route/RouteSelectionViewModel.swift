@@ -39,6 +39,13 @@ final class RouteSelectionViewModel {
     /// Every station, in line order. 17 of 20 until Cikoya, Tenjo and Jatake are added.
     private let allStations = GreenLineStation.fullLine
 
+    /// Shared services, passed on to Kondisi Rute.
+    let container: AppContainer
+
+    init(container: AppContainer) {
+        self.container = container
+    }
+
     /// The stations matching the active field's text, in line order. All of them when the text is empty.
     ///
     /// Matching ignores case and accents and skips the "Stasiun " prefix, so "jurang" finds Jurangmangu.
