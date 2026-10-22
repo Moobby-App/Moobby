@@ -46,6 +46,11 @@ extension GreenLineStation {
         GreenLineStation(id: "THB", name: "Stasiun Tanah Abang",    sequence: 1,  latitude: -6.1857, longitude: 106.8108)
     ]
 
+    /// ``name`` without the "Stasiun " prefix, such as `"Kebayoran"`, for fields and headers.
+    var shortName: String {
+        name.hasPrefix("Stasiun ") ? String(name.dropFirst("Stasiun ".count)) : name
+    }
+
     /// The stations from `departure` to `destination`, inclusive, in travel order.
     ///
     /// Works in both directions (Decision 19): Kebayoran → Cisauk and Cisauk → Kebayoran both return
