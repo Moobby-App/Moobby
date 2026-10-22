@@ -57,16 +57,20 @@ final class AppContainer {
     let api: APIClient
     /// Face ID / Touch ID; ``DeviceBiometricAuthenticator`` in the app.
     let biometrics: BiometricAuthenticating
+    /// Placeholder incidents, TransJakarta stops and travel schedule; ``BundledJSONData`` in the app.
+    let localData: LocalDataProviding
 
     init(
         log: Log.Type = Log.self,
         store: KeyValueStore = UserDefaultStore(),
         api: APIClient = APIClient(),
-        biometrics: BiometricAuthenticating = DeviceBiometricAuthenticator()
+        biometrics: BiometricAuthenticating = DeviceBiometricAuthenticator(),
+        localData: LocalDataProviding = BundledJSONData()
     ) {
         self.log = log
         self.store = store
         self.api = api
         self.biometrics = biometrics
+        self.localData = localData
     }
 }

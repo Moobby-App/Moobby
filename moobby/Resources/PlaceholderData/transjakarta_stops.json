@@ -1,0 +1,7 @@
+[
+  { "id": "tr-01", "name": "Halte JakLingko / Explorer Tanah Abang", "stationId": "THB", "latitude": -6.1862, "longitude": 106.8118 },
+  { "id": "tr-02", "name": "Halte Stasiun Palmerah", "stationId": "PLM", "latitude": -6.2075, "longitude": 106.7976 },
+  { "id": "tr-03", "name": "Halte TransJakarta Velbak", "stationId": "KBY", "latitude": -6.2394, "longitude": 106.7836 },
+  { "id": "tr-04", "name": "Halte Pasar Kebayoran Lama", "stationId": "KBY", "latitude": -6.2381, "longitude": 106.7818 },
+  { "id": "tr-09", "name": "Halte Feeder TransJakarta BSD City", "stationId": "RU", "latitude": -6.3130, "longitude": 106.6750 }
+]

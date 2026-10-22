@@ -147,7 +147,7 @@ extension Incident {
         Section("Banner") {
             Text("\(affected.count) stasiun terdampak")
         }
-        Section("Terbaru dulu (harus p2, p1, p3, lalu tanpa waktu)") {
+        Section("Terbaru dulu (harus p2, p1, p3)") {
             ForEach(Incident.newestFirst(onSegment)) { Text("\($0.id) · \($0.title)") }
         }
     }

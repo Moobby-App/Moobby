@@ -24,3 +24,6 @@ Why we chose what we chose. Newest at the bottom. "Agent suggestion" = proposed 
 | 18 | Station codes and coordinates come from the iteration 1 list and Wikipedia; Cikoya, Tenjo and Jatake wait for the backend developer | Don't invent data | Estimate the missing values | Agent suggestion |
 | 19 | Both travel directions allowed | Commuters go to Jakarta and back; the design's example (Kebayoran – Cisauk) goes away from Jakarta | One direction only | Agent suggestion |
 | 20 | The departure station can't be picked as the destination | The same-station case can't happen, so no error message is needed | Allow it and show an error | Agent suggestion |
+| 21 | Placeholder data is converted from iteration 1 samples (`curatedSamples`, TransJakarta stops in `catalog`) | Don't invent data; MRT, angkot and shuttle stops are out of scope | Write new sample data | Agent suggestion |
+| 22 | Estimated times = departure time + a fixed number of minutes per station from `schedule.json` | No real KRL schedule exists yet (open question 9) | Hard-code times per station | Agent suggestion |
+| 23 | Local data is a new `AppContainer` dependency (`localData`), following the "Adding a dependency" steps in `AppContainer` | Team convention: dependencies come from `AppContainer`; previews can pass fake data | Load JSON directly inside each ViewModel | Agent suggestion |

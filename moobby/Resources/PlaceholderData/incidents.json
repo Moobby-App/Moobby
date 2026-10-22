@@ -1,0 +1,62 @@
+[
+  {
+    "id": "inc-001",
+    "title": "Gangguan Persinyalan di Stasiun Sudimara, Perjalanan KRL Lin Rangkasbitung Antre",
+    "summary": null,
+    "category": "service_disruption",
+    "locationName": "Stasiun Sudimara",
+    "latitude": -6.2966,
+    "longitude": 106.7126,
+    "nearestStationId": "SDM",
+    "nearestStationName": "Stasiun Sudimara",
+    "distanceToStationKm": 0.05,
+    "publishedAt": "2026-10-18T11:20:00+07:00",
+    "sourceName": "Info Resmi Commuter (Contoh Kurasi)",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "inc-002",
+    "title": "Unjuk Rasa di Sekitar DPR Palmerah, Rekayasa Lalu Lintas & Penutupan Jalan",
+    "summary": null,
+    "category": "incident",
+    "locationName": "Kawasan DPR/MPR Palmerah",
+    "latitude": -6.2104,
+    "longitude": 106.8001,
+    "nearestStationId": "PLM",
+    "nearestStationName": "Stasiun Palmerah",
+    "distanceToStationKm": 0.48,
+    "publishedAt": "2026-10-18T12:05:00+07:00",
+    "sourceName": "Kompas Megapolitan (Contoh Kurasi)",
+    "verificationStatus": "unverified"
+  },
+  {
+    "id": "inc-003",
+    "title": "Genangan Banjir & Pohon Tumbang di Simpang Velbak Kebayoran Akibat Hujan Deras",
+    "summary": null,
+    "category": "incident",
+    "locationName": "Simpang Velbak Kebayoran",
+    "latitude": -6.2392,
+    "longitude": 106.7845,
+    "nearestStationId": "KBY",
+    "nearestStationName": "Stasiun Kebayoran",
+    "distanceToStationKm": 0.31,
+    "publishedAt": "2026-10-18T12:40:00+07:00",
+    "sourceName": "DetikNews (Contoh Kurasi)",
+    "verificationStatus": "unverified"
+  },
+  {
+    "id": "inc-004",
+    "title": "Proyek Galian Jalan Dekat Intermoda Cisauk Sebabkan Macet Akses Ojol & Angkot",
+    "summary": null,
+    "category": "incident",
+    "locationName": "Kawasan Intermoda Cisauk",
+    "latitude": -6.3255,
+    "longitude": 106.6422,
+    "nearestStationId": "CSK",
+    "nearestStationName": "Stasiun Cisauk",
+    "distanceToStationKm": 0.13,
+    "publishedAt": "2026-10-18T10:15:00+07:00",
+    "sourceName": "TangerangNews (Contoh Kurasi)",
+    "verificationStatus": "unverified"
+  }
+]
