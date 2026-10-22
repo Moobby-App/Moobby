@@ -9,8 +9,8 @@ import SwiftUI
 
 /// Kondisi Rute: the segment's header, the "N stasiun terdampak" banner and the station timeline.
 ///
-/// Thin: it draws ``RouteConditionViewModel/state``. The Detail Berita toggle comes in Task 9; the
-/// user's position marker comes with F1.
+/// Thin: it draws ``RouteConditionViewModel/state`` and forwards taps. The user's position marker
+/// comes with F1.
 struct RouteConditionView: View {
     @State private var viewModel: RouteConditionViewModel
 
@@ -71,7 +71,11 @@ struct RouteConditionView: View {
                     StationRow(
                         status: status,
                         isFirst: index == 0,
-                        isLast: index == stations.count - 1
+                        isLast: index == stations.count - 1,
+                        isExpanded: viewModel.isExpanded(status),
+                        onToggleDetail: {
+                            withAnimation { viewModel.toggleDetail(for: status) }
+                        }
                     )
                 }
             }

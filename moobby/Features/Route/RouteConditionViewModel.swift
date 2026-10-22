@@ -20,6 +20,8 @@ final class RouteConditionViewModel {
         let estimatedTime: Date?
         /// This station's incidents, newest first. Empty means not affected.
         let incidents: [Incident]
+        /// TransJakarta stops connected to this station. Empty means no chips (AC14).
+        let stops: [TransJakartaStop]
 
         var id: String { station.id }
 
@@ -39,6 +41,9 @@ final class RouteConditionViewModel {
 
     /// What the screen shows now.
     private(set) var state: State = .loading
+
+    /// The stations whose Detail Berita is open.
+    private(set) var expandedStationIDs: Set<String> = []
 
     private let container: AppContainer
 
@@ -71,6 +76,23 @@ final class RouteConditionViewModel {
         affectedCount > 0 ? "\(affectedCount) stasiun terdampak" : nil
     }
 
+    /// Whether `status` shows its Detail Berita.
+    func isExpanded(_ status: StationStatus) -> Bool {
+        expandedStationIDs.contains(status.id)
+    }
+
+    /// Opens or closes Detail Berita for an affected station. Does nothing for a station that isn't affected.
+    ///
+    /// Covers AC26.
+    func toggleDetail(for status: StationStatus) {
+        guard status.isAffected else { return }
+        if expandedStationIDs.contains(status.id) {
+            expandedStationIDs.remove(status.id)
+        } else {
+            expandedStationIDs.insert(status.id)
+        }
+    }
+
     /// Loads the first time the screen appears.
     func loadIfNeeded() async {
         guard case .loading = state else { return }
@@ -79,7 +101,7 @@ final class RouteConditionViewModel {
 
     /// Builds the timeline: the segment, each station's estimated time, and the incidents on it.
     ///
-    /// Covers AC1, AC9, AC10, AC11, AC12, AC24 and AC25.
+    /// Covers AC1, AC9, AC10, AC11, AC12, AC13, AC14, AC24 and AC25.
     func load() async {
         let segment = GreenLineStation.segment(from: departure, to: destination)
         do {
@@ -87,12 +109,14 @@ final class RouteConditionViewModel {
             let onSegment = Incident.onSegment(allIncidents, segment: segment)
             let times = (try? container.localData.schedule())?
                 .estimatedTimes(for: segment, departingAt: .now) ?? [:]
+            let allStops = (try? container.localData.transJakartaStops()) ?? []
 
             state = .loaded(segment.map { station in
                 StationStatus(
                     station: station,
                     estimatedTime: times[station.id],
-                    incidents: onSegment.filter { $0.nearestStationId == station.id }
+                    incidents: onSegment.filter { $0.nearestStationId == station.id },
+                    stops: TransJakartaStop.stops(for: station, in: allStops)
                 )
             })
         } catch {
