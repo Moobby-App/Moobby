@@ -19,3 +19,8 @@ Why we chose what we chose. Newest at the bottom. "Agent suggestion" = proposed 
 | 13 | Placeholder data; `APIConfig.baseURL` unchanged for now | The tunnel URL is temporary and would break the app when it changes | Commit the tunnel URL | Agent suggestion |
 | 14 | English folder and type names | Consistent with existing code (`Map`, `Components`) | Indonesian names | Agent suggestion |
 | 15 | Selected route shared through an `@Observable` object created in `ContentView` | Session state, not an app-wide service, so it doesn't belong in `AppContainer` | Put it in `AppContainer`; save it in `store` | Agent suggestion |
+| 16 | Reuse the iteration 1 `GreenLineStation` type; add the 20-station list in a new file | Same station codes as the backend (`"KBY"`), and no iteration 1 file is edited | New `Station` model for iteration 2 | Agent suggestion |
+| 17 | New `Incident` model for API data, with optional fields | The API can leave fields empty; `CorridorIncident` requires all of them | Reuse `CorridorIncident` | Agent suggestion |
+| 18 | Station codes and coordinates come from the iteration 1 list and Wikipedia; Cikoya, Tenjo and Jatake wait for the backend developer | Don't invent data | Estimate the missing values | Agent suggestion |
+| 19 | Both travel directions allowed | Commuters go to Jakarta and back; the design's example (Kebayoran – Cisauk) goes away from Jakarta | One direction only | Agent suggestion |
+| 20 | The departure station can't be picked as the destination | The same-station case can't happen, so no error message is needed | Allow it and show an error | Agent suggestion |

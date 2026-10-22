@@ -9,7 +9,7 @@
 moobby/
 ├── App/ContentView.swift                     (changed: tabs)
 ├── Core/Model/
-│   ├── Station.swift                         (new)
+│   ├── GreenLineStation+FullLine.swift       (new: 20-station list, reuses the iteration 1 type)
 │   ├── Incident.swift                        (new)
 │   └── TransJakartaStop.swift                (new)
 ├── Core/Networking/Requests/
@@ -45,8 +45,9 @@ Each task: build → check → commit, one at a time.
 
 | # | Task | ACs | Files |
 |---|---|---|---|
-| 0 | Read existing code before writing any: `GreenLineCorridorData`, `GreenLineTrack`, `Endpoint`, `FontStyle`, `GlassCard`, `project.yml`. Decide what to reuse. No code. | — | — |
-| 1 | Models + the 20-station list + segment logic (stations between departure and destination, in order) | AC1, AC9, AC12 | `Station`, `Incident`, `TransJakartaStop` |
+| 0 | ✅ Done. Read existing code (see "Task 0 findings" below). | — | — |
+| 1a | ✅ Done. 20-station list (17 for now) + segment logic in both directions; checked in the "Segment check" Preview | AC1, AC21 (partly) | `GreenLineStation+FullLine` |
+| 1b | `Incident` and `TransJakartaStop` models | AC9, AC12 (data) | `Incident`, `TransJakartaStop` |
 | 2 | Placeholder JSON + loading it (incidents, schedule, TJ stops) | AC24, AC13, AC14 (data) | `Resources/PlaceholderData/*` |
 | 3 | `GetIncidentsRequest` (APIRequest) called via `container.api.execute(...)`; fall back to placeholder while the API returns `[]` | AC16, AC19, AC20 (data) | `GetIncidentsRequest` |
 | 4 | Swap tabs in `ContentView`: Berita + Rute replace Map + Components (iteration 1 code stays) | OQ8 | `ContentView` |
@@ -62,9 +63,18 @@ Each task: build → check → commit, one at a time.
 ## Later (not in this plan)
 - F1 Live Location Tracking (AC2–AC8): its own plan after Task 12.
 
+## Task 0 findings
+- `project.yml` builds everything under `moobby/` into the app, so placeholder JSON there is bundled automatically (assumption 1 confirmed).
+- `GreenLineStation` (iteration 1) already models a station: code (`"KBY"`), name, sequence from Tanah Abang (1), coordinates. Its `all` list has only 12 stations.
+- `CorridorIncident` has the same field names as the backend API, but every field is required and `publishedAt` is pre-formatted text, so it can't decode API responses where fields are missing.
+- `CorridorIncident.curatedSamples` and `NearbyTransitPoint.catalog` are sample data that can seed the placeholder JSON.
+- `Core/UI`: `.typography(.title / .body / .button / .caption)` and `.glassCard(cornerRadius:)`.
+- Only "When In Use" location permission exists (iteration 1). Opening Apple Maps uses Maps' own location permission, so AC15 may not be needed; to decide before Task 10.
+- Station codes: 12 from iteration 1, 5 from Wikipedia (CTR, TGS, DAR, CJT, CC). **Cikoya, Tenjo and Jatake are missing**; ask the backend developer.
+
 ## Assumptions
-1. Placeholder JSON files inside `moobby/` are picked up as app resources by XcodeGen (to be checked in Task 0 against `project.yml`).
-2. Station IDs in our list will be our own (e.g. `sudimara`); mapping to backend `nearestStationId` waits for Open question 6.
+1. ~~Placeholder JSON files inside `moobby/` are picked up as app resources by XcodeGen.~~ Confirmed in Task 0.
+2. Backend `nearestStationId` uses the same station codes as iteration 1 (e.g. `"KBY"`), because the API fields match `CorridorIncident`, whose `nearestStationId` is a `GreenLineStation.id`. To confirm (Open question 6).
 3. The selected route is shared between tabs through one `@Observable` object created in `ContentView` and passed to both tabs. It is session state, not an app-wide service, so it does **not** go into `AppContainer`. (To log in `Decisions.md` if approved.)
 4. `APIConfig.baseURL` is **not** changed to the temporary tunnel URL in this branch (see Questions).
 

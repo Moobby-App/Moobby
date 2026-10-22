@@ -73,6 +73,8 @@ For new commuters on the KRL Green Line who only know one route, Moobby is an iO
   19. Palmerah
   20. Tanah Abang
 - The user's segment = all stations from the departure station to the destination station, inclusive, in the order above.
+- Both directions are allowed (e.g. Kebayoran → Cisauk and Cisauk → Kebayoran); the segment is shown in travel order.
+- Once a departure station is picked, it can't be picked as the destination (shown disabled).
 
 ### Data
 - Disruption data comes from the team backend (`GET /api/v1/incidents`). The base URL is set only in `APIConfig.baseURL` in `moobby/Core/Networking/APIClient.swift`; don't hardcode it anywhere else.
@@ -194,16 +196,15 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 5. Where should an incident without `nearestStationId` be shown?
 6. Do the `nearestStationId` values match the station names/IDs in our station list? **(agent)**
 7. Can we get one real example response? The API currently returns `[]`, so the fields haven't been checked.
+8. What are the station codes and coordinates for Cikoya, Tenjo and Jatake? **(agent)**
 
 ### For the team
-8. Where will estimated station times come from after the prototype, and should they change when there is a disruption? (Watch out for "predictions" in Out of Scope.)
-9. Where will TransJakarta stop data come from after the prototype?
-10. What happens if the departure and destination station are the same?
-11. Can the user travel in either direction (e.g. Kebayoran → Cisauk and Cisauk → Kebayoran)? **(agent)**
-12. Are third-party packages allowed? **(agent)**
-13. Does "Lihat semua berita" show all Green Line incidents, or only those matching the news relevance rule? **(agent)**
-14. What does tab Berita show when a route is selected but it has no incidents? **(agent)**
-15. When should the team add a unit test target? **(agent)**
+9. Where will estimated station times come from after the prototype, and should they change when there is a disruption? (Watch out for "predictions" in Out of Scope.)
+10. Where will TransJakarta stop data come from after the prototype?
+11. Are third-party packages allowed? **(agent)**
+12. Does "Lihat semua berita" show all Green Line incidents, or only those matching the news relevance rule? **(agent)**
+13. What does tab Berita show when a route is selected but it has no incidents? **(agent)**
+14. When should the team add a unit test target? **(agent)**
 
 ## Notes for the Agent
 - Propose a plan before writing any code. Break it into small numbered tasks, link each to the ACs it covers, and list the files you'll create.
@@ -249,6 +250,7 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 - Passed stations are faded; other station styles follow Apple HIG (AC3).
 - Removed the chevron before the stop chips.
 - States without a design use built-in iOS components.
+- Both travel directions allowed; the departure station can't be picked again as the destination (accepted agent suggestion).
 
 ### Changes suggested by the agent (review each one)
 - Core loop step 1 (select route).
@@ -257,5 +259,5 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 - "Up to 3 latest incidents" on tab Berita (taken from the design).
 - Empty search result text, AC22 (search filter).
 - Test tags on every AC.
-- Open questions 6, 11, 12, 13, 14 and 15.
+- Open questions 6, 8, 11, 12, 13 and 14.
 - Notes about the README code and `///` doc comments.
