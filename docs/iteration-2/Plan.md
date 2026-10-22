@@ -47,7 +47,7 @@ Each task: build → check → commit, one at a time.
 |---|---|---|---|
 | 0 | ✅ Done. Read existing code (see "Task 0 findings" below). | — | — |
 | 1a | ✅ Done. 20-station list (17 for now) + segment logic in both directions; checked in the "Segment check" Preview | AC1, AC21 (partly) | `GreenLineStation+FullLine` |
-| 1b | `Incident` and `TransJakartaStop` models | AC9, AC12 (data) | `Incident`, `TransJakartaStop` |
+| 1b | ✅ Done. `Incident` (optional API fields, segment filter, affected stations counted once, newest first) and `TransJakartaStop`; checked in the "Incident rules check" Preview | AC9, AC12, AC25, AC13, AC14 (logic) | `Incident`, `TransJakartaStop` |
 | 2 | Placeholder JSON + loading it (incidents, schedule, TJ stops) | AC24, AC13, AC14 (data) | `Resources/PlaceholderData/*` |
 | 3 | `GetIncidentsRequest` (APIRequest) called via `container.api.execute(...)`; fall back to placeholder while the API returns `[]` | AC16, AC19, AC20 (data) | `GetIncidentsRequest` |
 | 4 | Swap tabs in `ContentView`: Berita + Rute replace Map + Components (iteration 1 code stays) | OQ8 | `ContentView` |
