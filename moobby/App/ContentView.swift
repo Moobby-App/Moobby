@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// The root view: a tab bar with the Map and Components tabs.
+/// The root view: a tab bar with the iteration 2 tabs, Berita and Rute.
 ///
 /// It receives the app's one ``AppContainer`` from ``MoobbyApp`` and passes it to each tab that
 /// needs services, so a feature gets its dependencies through its initializer:
@@ -21,25 +21,31 @@ import SwiftUI
 /// ```
 ///
 /// Don't create another `AppContainer` here or in a feature; outside previews and tests there's only one.
+///
+/// > Note: Iteration 1's Map and Components tabs aren't shown any more, but their code stays in
+/// > `Features/Map` and `Features/Components` (SPEC Constraints → Iteration, Decision 10).
 struct ContentView: View {
 
     /// Shared services, created once by ``MoobbyApp``.
     let container: AppContainer
-    @State private var mapTracker = LocationTrackerViewModel()
 
     var body: some View {
         TabView {
-            Tab("Map", systemImage: "map.fill") {
+            Tab("Berita", systemImage: "newspaper") {
                 NavigationStack {
-                    MapView(tracker: mapTracker)
+                    NewsView()
                 }
             }
 
-            Tab("Components", systemImage: "square.grid.2x2") {
+            Tab("Rute", systemImage: "tram") {
                 NavigationStack {
-                    ComponentsGalleryView(container: container)
+                    RouteSelectionView()
                 }
             }
         }
     }
+}
+
+#Preview {
+    ContentView(container: AppContainer())
 }

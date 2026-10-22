@@ -205,6 +205,7 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 12. Does "Lihat semua berita" show all Green Line incidents, or only those matching the news relevance rule? **(agent)**
 13. What does tab Berita show when a route is selected but it has no incidents? **(agent)**
 14. When should the team add a unit test target? **(agent)**
+15. `moobbyUITests/ComponentScreenshotTests` taps the Components tab, which iteration 2 no longer shows, so it now fails. Keep it (and show Components again for that test), move it, or remove it? **(agent)**
 
 ## Notes for the Agent
 - Propose a plan before writing any code. Break it into small numbered tasks, link each to the ACs it covers, and list the files you'll create.
