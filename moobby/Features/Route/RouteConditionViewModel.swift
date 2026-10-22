@@ -45,6 +45,9 @@ final class RouteConditionViewModel {
     /// The stations whose Detail Berita is open.
     private(set) var expandedStationIDs: Set<String> = []
 
+    /// Shows the "Izin lokasi dibutuhkan" alert when the user taps a stop without location permission (AC15).
+    var showsLocationAlert = false
+
     private let container: AppContainer
 
     init(container: AppContainer, departure: GreenLineStation, destination: GreenLineStation) {
@@ -90,6 +93,21 @@ final class RouteConditionViewModel {
             expandedStationIDs.remove(status.id)
         } else {
             expandedStationIDs.insert(status.id)
+        }
+    }
+
+    /// Opens walking directions to `stop` in Apple Maps if Moobby may use the user's location; otherwise
+    /// shows the location alert and doesn't open Maps (Decision 25).
+    ///
+    /// Asks for permission first if the user hasn't been asked yet.
+    ///
+    /// Covers AC15 and AC27.
+    func openDirections(to stop: TransJakartaStop) async {
+        switch await container.locationPermission.requestIfNeeded() {
+        case .allowed:
+            stop.openWalkingDirections()
+        case .denied, .notDetermined:
+            showsLocationAlert = true
         }
     }
 

@@ -18,6 +18,7 @@ struct StationRow: View {
     let isLast: Bool
     let isExpanded: Bool
     let onToggleDetail: () -> Void
+    let onSelectStop: (TransJakartaStop) -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 14) {
@@ -54,7 +55,7 @@ struct StationRow: View {
                     .accessibilityHint(isExpanded ? "Tutup detail gangguan" : "Buka detail gangguan")
 
                     if isExpanded {
-                        StationDetailPanel(status: status)
+                        StationDetailPanel(status: status, onSelectStop: onSelectStop)
                             .padding(.top, 4)
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }

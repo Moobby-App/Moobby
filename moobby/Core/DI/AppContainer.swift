@@ -59,18 +59,22 @@ final class AppContainer {
     let biometrics: BiometricAuthenticating
     /// Placeholder incidents, TransJakarta stops and travel schedule; ``BundledJSONData`` in the app.
     let localData: LocalDataProviding
+    /// Moobby's location permission; ``DeviceLocationPermission`` in the app.
+    let locationPermission: LocationPermissionProviding
 
     init(
         log: Log.Type = Log.self,
         store: KeyValueStore = UserDefaultStore(),
         api: APIClient = APIClient(),
         biometrics: BiometricAuthenticating = DeviceBiometricAuthenticator(),
-        localData: LocalDataProviding = BundledJSONData()
+        localData: LocalDataProviding = BundledJSONData(),
+        locationPermission: LocationPermissionProviding = DeviceLocationPermission()
     ) {
         self.log = log
         self.store = store
         self.api = api
         self.biometrics = biometrics
         self.localData = localData
+        self.locationPermission = locationPermission
     }
 }

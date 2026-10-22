@@ -12,9 +12,11 @@ import SwiftUI
 /// This is the in-timeline detail, not the full Detail Berita page on tab Berita (SPEC Screens and States).
 ///
 /// Covers AC26, AC10 (each incident's source and time), AC13 (chips) and AC14 (no chips when there are
-/// no stops). Tapping a chip comes in Task 10.
+/// no stops). Tapping a chip opens walking directions (AC27) or the location alert (AC15).
 struct StationDetailPanel: View {
     let status: RouteConditionViewModel.StationStatus
+    /// Called when the user taps a stop chip.
+    let onSelectStop: (TransJakartaStop) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -45,11 +47,17 @@ struct StationDetailPanel: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(status.stops) { stop in
-                                Text(stop.name)
-                                    .typography(.caption)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(.secondary.opacity(0.15), in: .capsule)
+                                Button {
+                                    onSelectStop(stop)
+                                } label: {
+                                    Label(stop.name, systemImage: "figure.walk")
+                                        .typography(.caption)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(.secondary.opacity(0.15), in: .capsule)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityHint("Buka rute jalan kaki ke halte di Apple Maps")
                             }
                         }
                     }

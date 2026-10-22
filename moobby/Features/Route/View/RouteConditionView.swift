@@ -13,6 +13,7 @@ import SwiftUI
 /// comes with F1.
 struct RouteConditionView: View {
     @State private var viewModel: RouteConditionViewModel
+    @Environment(\.openURL) private var openURL
 
     init(viewModel: RouteConditionViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -43,6 +44,16 @@ struct RouteConditionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.loadIfNeeded() }
         .refreshable { await viewModel.load() }
+        .alert("Izin lokasi dibutuhkan", isPresented: $viewModel.showsLocationAlert) {
+            Button("Buka Pengaturan") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    openURL(url)
+                }
+            }
+            Button("Batal", role: .cancel) {}
+        } message: {
+            Text("Moobby butuh lokasimu untuk menunjukkan rute jalan kaki ke halte. Aktifkan izin lokasi untuk Moobby di Pengaturan.")
+        }
     }
 
     @ViewBuilder
@@ -75,6 +86,9 @@ struct RouteConditionView: View {
                         isExpanded: viewModel.isExpanded(status),
                         onToggleDetail: {
                             withAnimation { viewModel.toggleDetail(for: status) }
+                        },
+                        onSelectStop: { stop in
+                            Task { await viewModel.openDirections(to: stop) }
                         }
                     )
                 }
