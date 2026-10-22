@@ -22,13 +22,14 @@ For new commuters on the KRL Green Line who only know one route, Moobby is an iO
 4. Wait on the usual route, or walk to a TransJakarta stop if it takes too long.
 
 ## MVP Features (must ship)
-- **F1 — Live Location Tracking:** Track the user's position along the selected Green Line segment, including in the background, and show their movement from station to station.
+- **F1 — Live Location Tracking:** Track the user's position along the selected Green Line segment, including in the background, and show their movement from station to station. *(Deferred: built in a later task, after F2 and F3.)*
 - **F2 — Disruption Information:** **(agent: berita digabung ke F2 karena panduan membatasi maksimal 3 fitur MVP)**
   - **F2a — Berita (tab 1):** a list of Green Line disruption news, a "Lihat semua berita" button, and a news detail page.
   - **F2b — Kondisi Rute (tab 2):** the user always selects a departure and destination station first (whether location is allowed or denied). Then the app shows the stations of that segment with estimated times, marks affected stations, and shows the disruption detail on each affected station.
 - **F3 — Nearby TransJakarta:** In the disruption detail of an affected station, show the TransJakarta stops connected to that station as tappable options. Tapping one opens Apple Maps with directions from the user's current location to that stop.
 
 ## Out of Scope
+- Changing or removing iteration 1 code (Map, Components)
 - AI-based route recommendations and predictions
 - Full multimodal route planning, including any TransJakarta route after the stop (directions go only from the user to the stop)
 - An in-app map or in-app route drawing (directions open in Apple Maps)
@@ -39,6 +40,9 @@ For new commuters on the KRL Green Line who only know one route, Moobby is an iO
 - Online motorcycle taxis (ojol), online taxis, and transport modes other than the KRL Green Line and the TransJakarta stops connected to it
 
 ## Constraints
+
+### Iteration
+- This is iteration 2. Tabs "Berita" and "Rute" replace "Map" and "Components" in the `TabView`. Iteration 1 code stays in the repo but is not shown.
 
 ### Platform
 - iPhone, **iOS 26.5 or later** (matches `deploymentTarget` in `project.yml`), SwiftUI, Core Location, MapKit (only to open Apple Maps)
@@ -74,7 +78,11 @@ For new commuters on the KRL Green Line who only know one route, Moobby is an iO
 - Disruption data comes from the team backend (`GET /api/v1/incidents`). The base URL is set only in `APIConfig.baseURL` in `moobby/Core/Networking/APIClient.swift`; don't hardcode it anywhere else.
 - An incident belongs to a station through its `nearestStationId` / `nearestStationName`.
 - Use placeholder JSON for incidents while the API returns an empty list.
+- This branch keeps `APIConfig.baseURL` unchanged; it switches to the team backend once that URL is stable (the current tunnel URL is temporary).
 - Estimated station times and TransJakarta stops (name + coordinates per station) come from local JSON for the prototype.
+
+### Testing (POC)
+- The project has no unit test target yet. Criteria tagged *(Unit)* are checked manually or with UI tests until the team adds one.
 
 ### Rules
 - News and route condition show KRL Green Line disruptions only.
@@ -188,19 +196,20 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 7. Can we get one real example response? The API currently returns `[]`, so the fields haven't been checked.
 
 ### For the team
-8. Do tabs "Berita" and "Rute" replace the existing tabs (e.g. Map) or get added to them?
-9. Where will estimated station times come from after the prototype, and should they change when there is a disruption? (Watch out for "predictions" in Out of Scope.)
-10. Where will TransJakarta stop data come from after the prototype?
-11. What happens if the departure and destination station are the same?
-12. Can the user travel in either direction (e.g. Kebayoran → Cisauk and Cisauk → Kebayoran)? **(agent)**
-13. Are third-party packages allowed? **(agent)**
-14. Does "Lihat semua berita" show all Green Line incidents, or only those matching the news relevance rule? **(agent)**
-15. What does tab Berita show when a route is selected but it has no incidents? **(agent)**
+8. Where will estimated station times come from after the prototype, and should they change when there is a disruption? (Watch out for "predictions" in Out of Scope.)
+9. Where will TransJakarta stop data come from after the prototype?
+10. What happens if the departure and destination station are the same?
+11. Can the user travel in either direction (e.g. Kebayoran → Cisauk and Cisauk → Kebayoran)? **(agent)**
+12. Are third-party packages allowed? **(agent)**
+13. Does "Lihat semua berita" show all Green Line incidents, or only those matching the news relevance rule? **(agent)**
+14. What does tab Berita show when a route is selected but it has no incidents? **(agent)**
+15. When should the team add a unit test target? **(agent)**
+
 ## Notes for the Agent
 - Propose a plan before writing any code. Break it into small numbered tasks, link each to the ACs it covers, and list the files you'll create.
 - List your assumptions and questions. Ask; don't guess.
 - Implement one task at a time and tell me how to check it.
-- Write the test for each tagged criterion in the same task as the code, and show the test output as evidence. For UI tests, also give me the screenshot path.
+- Write the test for each *(UI)* criterion in the same task as the code, and show the test output as evidence, with the screenshot path. For *(Unit)* criteria, tell me how to check them by hand until a unit test target exists.
 - To test the location-denied states (AC8, AC15) in a UI test, use a launch argument that simulates denied access.
 - To test trip detection and station changes (AC2–AC7), use simulated locations (e.g. a GPX file) that move along the Green Line at train speed.
 - Use placeholder JSON for incidents, estimated times and TransJakarta stops if the real data isn't in the project yet, and tell me which files to replace.
@@ -231,6 +240,10 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 - No "BARU" label; news time comes from the news itself.
 - All news cards use one orange style (no grey cards).
 - Route header ⚠️ appears when at least one station in the segment is affected.
+- Iteration 2 tabs replace iteration 1 tabs; iteration 1 code stays (Constraints → Iteration, Out of Scope).
+- F1 deferred to a later task (accepted agent suggestion).
+- No unit test target for the POC; *(Unit)* criteria checked manually (accepted agent suggestion).
+- Placeholder data; `APIConfig.baseURL` unchanged until the backend URL is stable (accepted agent suggestion).
 - News relevance: latest news before a route is selected, segment news after (AC16, AC28).
 - Removed the "delayed" / "normal" status label; AC10 and AC11 rewritten to use ⚠️ and the banner.
 - Passed stations are faded; other station styles follow Apple HIG (AC3).
@@ -244,4 +257,5 @@ IDs AC1–AC15 are kept from v1 so old references still work; new criteria start
 - "Up to 3 latest incidents" on tab Berita (taken from the design).
 - Empty search result text, AC22 (search filter).
 - Test tags on every AC.
-- Open questions 6, 12, 13, 14 and 15.- Notes about the README code and `///` doc comments.
+- Open questions 6, 11, 12, 13, 14 and 15.
+- Notes about the README code and `///` doc comments.
